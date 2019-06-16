@@ -1,3 +1,4 @@
+# Declare some variables to be used throughout execution
 file = ARGV[0]
 firstnames = {}
 lastnames = {}
@@ -8,6 +9,9 @@ wholename_c = 0
 common_firstnames = {}
 common_lastnames = {}
 unique_names = []
+mod_names = []
+modified = false
+N_NAMES = 25
 
 
 IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
@@ -71,13 +75,13 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
     common_lastnames = common_lastnames.sort_by {|k, v| -v}.to_h
   end
 
-  # First 25 Unique Names
+  # First N_NAMES Unique Names
 
-  unless unique_names.count == 25
+  if unique_names.count != N_NAMES
     if firstnames[firstname] == 1 && lastnames[lastname] == 1
       # Both the first and last name are unique. Add.
       unique_names << wholename
-    elsif firstnames[firstname] > 1 || lastnames[lastname] > 1
+    elsif firstnames[firstname] >  1 || lastnames[lastname] > 1
       # Either the first or last name is not unique: remove
       unique_names = unique_names.reject do |x|
         x_last, x_first = x.split(', ')
@@ -85,6 +89,18 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
         next true if x_first == firstname
         next
       end
+    end
+  elsif unique_names.count == N_NAMES && !modified
+    modified = true
+    l_names = []
+    f_names = []
+    unique_names.each do |name|
+      l_names << name.split(', ')[0]
+      f_names << name.split(', ')[1]
+    end
+    N_NAMES.times do |i|
+      l_name_index = i - 1 >= 0 ? i - 1 : N_NAMES - 1
+      mod_names << [l_names[i], f_names[l_name_index]].join(", ")
     end
   end
 end
@@ -94,4 +110,5 @@ puts "Unique lastnames: #{lastname_c}"
 puts "Uniuqe wholenames: #{wholename_c}"
 puts "Most common firstnames: #{common_firstnames}"
 puts "Most common lastnames: #{common_lastnames}"
-puts "25 first unique names: #{unique_names}"
+puts "N_NAMES first unique names: #{unique_names}"
+puts "N_NAMES modified names: #{mod_names}"
