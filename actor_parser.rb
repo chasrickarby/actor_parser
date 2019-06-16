@@ -14,6 +14,10 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
   wholename = line.split(" --")[0]
   lastname, firstname = wholename.split(', ')
 
+  # Verify that the name is valid - which means the names contain only uppercase and lowercase letters
+  # This means names like O'Connor are invalid.
+  next if firstname == nil || lastname == nil || firstname[/[a-zA-Z]+/] != firstname || lastname[/[a-zA-Z]+/] != lastname
+
   # Unique first names
   firstnames[firstname] = firstnames[firstname].nil? ? 1 : 1 + firstnames[firstname]
 
