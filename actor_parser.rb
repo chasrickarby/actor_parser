@@ -3,14 +3,10 @@ file = ARGV[0]
 firstnames = {}
 lastnames = {}
 wholenames = {}
-firstname_c = 0
-lastname_c = 0
-wholename_c = 0
 common_firstnames = {}
 common_lastnames = {}
 unique_names = []
 modified_names = []
-modified = false
 N_NAMES = 25
 
 
@@ -22,7 +18,6 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
 
   if firstnames[firstname].nil?
     firstnames[firstname] = 1
-    firstname_c += 1
   else
     firstnames[firstname] = 1 + firstnames[firstname]
   end
@@ -31,7 +26,6 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
 
   if lastnames[lastname].nil?
     lastnames[lastname] = 1
-    lastname_c += 1
   else
     lastnames[lastname] = 1 + lastnames[lastname]
   end
@@ -40,7 +34,6 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
 
   if wholenames[wholename].nil?
     wholenames[wholename] = 1
-    wholename_c += 1
   else
     wholenames[wholename] = 1 + wholenames[wholename]
   end
@@ -68,15 +61,14 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
         next
       end
     end
-  elsif unique_names.count == N_NAMES && !modified
-    modified = true
+  elsif unique_names.count == N_NAMES && modified_names.count ==0
     modified_names = get_modified_names(unique_names)
   end
 end
 
-puts "Unique firstnames: #{firstname_c}"
-puts "Unique lastnames: #{lastname_c}"
-puts "Uniuqe wholenames: #{wholename_c}"
+puts "Unique firstnames: #{firstnames.count}"
+puts "Unique lastnames: #{lastnames.count}"
+puts "Uniuqe wholenames: #{wholenames.count}"
 puts "Most common firstnames: #{common_firstnames}"
 puts "Most common lastnames: #{common_lastnames}"
 puts "#{N_NAMES} first unique names: #{unique_names}"
