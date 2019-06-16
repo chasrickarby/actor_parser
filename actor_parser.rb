@@ -9,7 +9,7 @@ wholename_c = 0
 common_firstnames = {}
 common_lastnames = {}
 unique_names = []
-mod_names = []
+modified_names = []
 modified = false
 N_NAMES = 25
 
@@ -70,16 +70,7 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
     end
   elsif unique_names.count == N_NAMES && !modified
     modified = true
-    l_names = []
-    f_names = []
-    unique_names.each do |name|
-      l_names << name.split(', ')[0]
-      f_names << name.split(', ')[1]
-    end
-    N_NAMES.times do |i|
-      l_name_index = i - 1 >= 0 ? i - 1 : N_NAMES - 1
-      mod_names << [l_names[i], f_names[l_name_index]].join(", ")
-    end
+    modified_names = get_modified_names(unique_names)
   end
 end
 
@@ -88,8 +79,8 @@ puts "Unique lastnames: #{lastname_c}"
 puts "Uniuqe wholenames: #{wholename_c}"
 puts "Most common firstnames: #{common_firstnames}"
 puts "Most common lastnames: #{common_lastnames}"
-puts "N_NAMES first unique names: #{unique_names}"
-puts "N_NAMES modified names: #{mod_names}"
+puts "#{N_NAMES} first unique names: #{unique_names}"
+puts "#{N_NAMES} modified names: #{modified_names}"
 
 BEGIN {
   def handle_common_names(common_names, names, name)
@@ -106,5 +97,20 @@ BEGIN {
       common_names = common_names.sort_by {|k, v| -v}.to_h
     end
     return common_names
+  end
+
+  def get_modified_names(unique_names)
+    l_names = []
+    f_names = []
+    unique_names.each do |name|
+      l_names << name.split(', ')[0]
+      f_names << name.split(', ')[1]
+    end
+    mod_names = []
+    N_NAMES.times do |i|
+      l_name_index = i - 1 >= 0 ? i - 1 : N_NAMES - 1
+      mod_names << [l_names[i], f_names[l_name_index]].join(", ")
+    end
+    return mod_names
   end
 }
