@@ -15,39 +15,21 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
   lastname, firstname = wholename.split(', ')
 
   # Unique first names
-
-  if firstnames[firstname].nil?
-    firstnames[firstname] = 1
-  else
-    firstnames[firstname] = 1 + firstnames[firstname]
-  end
+  firstnames[firstname] = firstnames[firstname].nil? ? 1 : 1 + firstnames[firstname]
 
   # Unique last names
-
-  if lastnames[lastname].nil?
-    lastnames[lastname] = 1
-  else
-    lastnames[lastname] = 1 + lastnames[lastname]
-  end
+  lastnames[lastname] = lastnames[lastname].nil? ? 1 : 1 + lastnames[lastname]
 
   # Unique whole names
-
-  if wholenames[wholename].nil?
-    wholenames[wholename] = 1
-  else
-    wholenames[wholename] = 1 + wholenames[wholename]
-  end
+  wholenames[wholename] = wholenames[wholename].nil? ? 1 : 1 + wholenames[wholename]
 
   # Most common first names
-
   common_firstnames = handle_common_names(common_firstnames, firstnames, firstname)
 
   # Most common last names
-
   common_lastnames = handle_common_names(common_lastnames, lastnames, lastname)
 
   # First N_NAMES Unique Names
-
   if unique_names.count != N_NAMES
     if firstnames[firstname] == 1 && lastnames[lastname] == 1
       # Both the first and last name are unique. Add.
@@ -66,14 +48,17 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
   end
 end
 
-puts "Unique firstnames: #{firstnames.count}"
-puts "Unique lastnames: #{lastnames.count}"
-puts "Uniuqe wholenames: #{wholenames.count}"
-puts "Most common firstnames: #{common_firstnames}"
-puts "Most common lastnames: #{common_lastnames}"
-puts "#{N_NAMES} first unique names: #{unique_names}"
-puts "#{N_NAMES} modified names: #{modified_names}"
 
+# Print results with some extra spaces
+puts "Unique firstnames: #{firstnames.count}\n\n"
+puts "Unique lastnames: #{lastnames.count}\n\n"
+puts "Uniuqe wholenames: #{wholenames.count}\n\n"
+puts "Most common firstnames: #{common_firstnames}\n\n"
+puts "Most common lastnames: #{common_lastnames}\n\n"
+puts "#{N_NAMES} first unique names: #{unique_names}\n\n"
+puts "#{N_NAMES} modified names: #{modified_names}\n\n"
+
+# Include some helper methods
 BEGIN {
   def handle_common_names(common_names, names, name)
     if common_names.count < 10
