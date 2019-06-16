@@ -47,33 +47,11 @@ IO.foreach(file).lazy.reject{ |l| l[0..3] == "    " }.each do |line|
 
   # Most common first names
 
-  if common_firstnames.count < 10
-    common_firstnames[firstname.to_s] = firstnames[firstname]
-    common_firstnames = common_firstnames.sort_by {|k, v| -v}.to_h
-  elsif common_firstnames[common_firstnames.keys.last] < firstnames[firstname]
-    unless common_firstnames[firstname].nil?
-      common_firstnames[firstname] = firstnames[firstname]
-    else
-      common_firstnames.delete(common_firstnames.keys.last)
-      common_firstnames[firstname] = firstnames[firstname]
-    end
-    common_firstnames = common_firstnames.sort_by {|k, v| -v}.to_h
-  end
+  common_firstnames = handle_common_names(common_firstnames, firstnames, firstname)
 
   # Most common last names
 
-  if common_lastnames.count < 10
-    common_lastnames[lastname.to_s] = lastnames[lastname]
-    common_lastnames = common_lastnames.sort_by {|k, v| -v}.to_h
-  elsif common_lastnames[common_lastnames.keys.last] < lastnames[lastname]
-    unless common_lastnames[lastname].nil?
-      common_lastnames[lastname] = lastnames[lastname]
-    else
-      common_lastnames.delete(common_lastnames.keys.last)
-      common_lastnames[lastname] = lastnames[lastname]
-    end
-    common_lastnames = common_lastnames.sort_by {|k, v| -v}.to_h
-  end
+  common_lastnames = handle_common_names(common_lastnames, lastnames, lastname)
 
   # First N_NAMES Unique Names
 
@@ -112,3 +90,21 @@ puts "Most common firstnames: #{common_firstnames}"
 puts "Most common lastnames: #{common_lastnames}"
 puts "N_NAMES first unique names: #{unique_names}"
 puts "N_NAMES modified names: #{mod_names}"
+
+BEGIN {
+  def handle_common_names(common_names, names, name)
+    if common_names.count < 10
+      common_names[name.to_s] = names[name]
+      common_names = common_names.sort_by {|k, v| -v}.to_h
+    elsif common_names[common_names.keys.last] < names[name]
+      unless common_names[name].nil?
+        common_names[name] = names[name]
+      else
+        common_names.delete(common_names.keys.last)
+        common_names[name] = names[name]
+      end
+      common_names = common_names.sort_by {|k, v| -v}.to_h
+    end
+    return common_names
+  end
+}
